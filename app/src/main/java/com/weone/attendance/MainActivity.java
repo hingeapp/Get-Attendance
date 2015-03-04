@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity  {
     public TextView tv1,tv2;
     public EditText ed1,ed2;
     public Button bt1;
@@ -50,8 +51,8 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class response extends AsyncTask {
+    private class response extends AsyncTask{
 
         public String makeRequest(String dest) throws IOException {
             URL url = new URL(dest);
@@ -122,8 +123,6 @@ public class MainActivity extends ActionBarActivity {
                 String attendance;
             try{
                 returnedLine = makeRequest("http://pict.ethdigitalcampus.com:80/DCWeb/authenticate.do");
-                tv1.setText(returnedLine);
-                tv1.setTextSize(20);
                 Log.i("YOLO","ReturnedLine is:" + returnedLine);
             }catch (IOException e){
                 e.printStackTrace();
