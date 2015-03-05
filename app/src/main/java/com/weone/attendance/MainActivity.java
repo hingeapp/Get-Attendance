@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -20,20 +25,34 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class MainActivity extends ActionBarActivity {
-
-    public String loginId = "I2K13101658";
-    public String password = "123456";
+public class MainActivity extends ActionBarActivity  {
+    public TextView tv1,tv2;
+    public EditText ed1,ed2;
+    public Button bt1;
+    public String loginId ;
+    public String password ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ed1=(EditText)findViewById(R.id.ed1);
+        ed2=(EditText)findViewById(R.id.ed2);
+        tv1=(TextView)findViewById(R.id.tv1);
+        tv2=(TextView)findViewById(R.id.tv2);
+        bt1=(Button)findViewById(R.id.bt1);
+        bt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginId=ed1.getText().toString();
+                password=ed2.getText().toString();
+                response task = new response();
+                task.execute();
+            }
+        });
 
-        response task = new response();
-        task.execute();
+
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,14 +76,14 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class response extends AsyncTask {
+    private class response extends AsyncTask{
 
         public String makeRequest(String dest) throws IOException {
             URL url = new URL(dest);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
-            String urlParameters = loginId + "&password=" + password + "&dbConnVar=PICT&service_id=";
+            String urlParameters = "loginid="+loginId + "&password=" + password + "&dbConnVar=PICT&service_id=";
             connection.setDoOutput(true);
 
             DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
@@ -77,19 +96,24 @@ public class MainActivity extends ActionBarActivity {
             String line;
             while( (line = reader.readLine() )!= null ) {
                 if(line.contains("Hi !")) {
-                    Log.i("YOLO","Line found"+line);
-                    return line;
+                    //Log.i("YOLO","Line found"+line.substring(12));
+                    return line.substring(12);
                 }
                 else if(line.contains("Average :")){
-                    Log.i("YOLO","Line found"+line);
-                    return line;
+                    int a = line.indexOf("<b>");
+                    int b = line.indexOf("</b>");
+                    String att = line.substring(a, b);
+                    att = att+ "%";
+                    //Log.i("YOLO","Line found"+att);
+                    return att;
+
                 }
                 else {
-                    Log.i("YOLO","Not this line "+line);
+                    //Log.i("YOLO","Not this line "+line);
                 }
             }
-
-            return "Emmm..dunno";
+            return null;
+            //return "Emmm..dunno";
         }
 
         @Override
@@ -117,7 +141,6 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-
             Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
         }
     }
