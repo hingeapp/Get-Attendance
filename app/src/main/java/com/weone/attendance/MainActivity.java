@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity  {
@@ -35,6 +37,7 @@ public class MainActivity extends ActionBarActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
         ed1=(EditText)findViewById(R.id.ed1);
         ed2=(EditText)findViewById(R.id.ed2);
@@ -44,8 +47,9 @@ public class MainActivity extends ActionBarActivity  {
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginId=ed1.getText().toString();
+                loginId=ed1.getText().toString().toUpperCase();
                 password=ed2.getText().toString();
+                setProgressBarIndeterminateVisibility(true);
                 response task = new response();
                 task.execute();
             }
@@ -77,9 +81,14 @@ public class MainActivity extends ActionBarActivity  {
     }
 
     private class response extends AsyncTask{
-
+        protected String name;
         protected String returnedLine;
         protected String attendance;
+        protected ArrayList<String> subject= new ArrayList<String>();
+        protected ArrayList<String> conducted= new ArrayList<String>();
+        protected ArrayList<String> attended= new ArrayList<String>();
+        protected ArrayList<String> percent= new ArrayList<String>();
+        protected int count = 0;
 
 
         public String makeRequest(String dest) throws IOException {
@@ -100,9 +109,36 @@ public class MainActivity extends ActionBarActivity  {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while( (line = reader.readLine() )!= null ) {
-                if(line.contains("Hi !")) {
+                if(line.contains("<tr class=\"child\"><td align=left  class = \"MTTD2\" colspan=\"1\"><b>")) {
                     //Log.i("YOLO","Line found"+line.substring(12));
-                    returnValue = line.substring(12);
+                    line = reader.readLine();
+                    int a = line.indexOf("colspan=\"2\">");
+                    Log.i("Name" , line.substring(a+12, line.length()-1));
+                    name = line.substring(a+12,line.length()-1);
+                }
+                else if(line.contains("<td align=left  class=MTTD8 colspan= ")){
+                    line = reader.readLine();       //this contains subject.
+                    subject.add(line);
+                    line = reader.readLine();
+                    line = reader.readLine();
+                    line = reader.readLine();       //this contains conducted lectures
+                    conducted.add(line.trim());
+
+                    reader.readLine();
+                    reader.readLine();
+                    reader.readLine();
+                    line = reader.readLine();   //this contains attended lectures
+                    attended.add(line.trim());
+
+                    reader.readLine();
+                    reader.readLine();
+                    reader.readLine();
+                    line = reader.readLine();   //this contains percent att
+                    percent.add(line.trim());
+
+                    count++;
+                    Log.i("Summary", subject.get(count - 1)+" " + conducted.get(count - 1) + " "
+                            + attended.get(count - 1) +" " + percent.get(count - 1));
                 }
                 else if(line.contains("Average :")){
                     line = reader.readLine();
@@ -110,15 +146,15 @@ public class MainActivity extends ActionBarActivity  {
 
                     int a = line.indexOf("<b>");
                     int b = line.indexOf("</b>");
-                    String att = line.substring(a+3, b);//+3 GETS RID OF <B>
+                    attendance = line.substring(a+3, b);//+3 GETS RID OF <B>
                     //String att = line;
-                    att = att+ "%";
+                    attendance = attendance+ "%";
                     //Log.i("YOLO","Line found"+att);
-                    returnValue = att;
+                    returnValue = attendance;
 
                 }
                 else {
-                    Log.i("YOLO","Not this line "+line);
+                    //not this line
                 }
             }
             return returnValue;
@@ -129,8 +165,8 @@ public class MainActivity extends ActionBarActivity  {
         protected Object doInBackground(Object[] params) {
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
             try{
-                returnedLine = makeRequest("http://pict.ethdigitalcampus.com:80/DCWeb/authenticate.do");
-                Log.i("YOLO","ReturnedLine is:" + returnedLine);
+                String yolo = makeRequest("http://pict.ethdigitalcampus.com:80/DCWeb/authenticate.do");
+                Log.i("YOLO","Name is:" + returnedLine);
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -148,7 +184,8 @@ public class MainActivity extends ActionBarActivity  {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            Toast.makeText(MainActivity.this,"Attendance is" + attendance,Toast.LENGTH_LONG ).show();
+            setProgressBarIndeterminateVisibility(false);
+            Toast.makeText(MainActivity.this,"Attendance of "+name+" is " + attendance,Toast.LENGTH_LONG ).show();
            // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
         }
     }
