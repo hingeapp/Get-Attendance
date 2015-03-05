@@ -78,6 +78,10 @@ public class MainActivity extends ActionBarActivity  {
 
     private class response extends AsyncTask{
 
+        protected String returnedLine;
+        protected String attendance;
+
+
         public String makeRequest(String dest) throws IOException {
             URL url = new URL(dest);
 
@@ -92,35 +96,38 @@ public class MainActivity extends ActionBarActivity  {
 
             InputStream inputStream = connection.getInputStream();
 
+            String returnValue = "error";
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while( (line = reader.readLine() )!= null ) {
                 if(line.contains("Hi !")) {
                     //Log.i("YOLO","Line found"+line.substring(12));
-                    return line.substring(12);
+                    returnValue = line.substring(12);
                 }
                 else if(line.contains("Average :")){
+                    line = reader.readLine();
+                    line = reader.readLine();
+
                     int a = line.indexOf("<b>");
                     int b = line.indexOf("</b>");
-                    String att = line.substring(a, b);
+                    String att = line.substring(a+3, b);//+3 GETS RID OF <B>
+                    //String att = line;
                     att = att+ "%";
                     //Log.i("YOLO","Line found"+att);
-                    return att;
+                    returnValue = att;
 
                 }
                 else {
-                    //Log.i("YOLO","Not this line "+line);
+                    Log.i("YOLO","Not this line "+line);
                 }
             }
-            return null;
+            return returnValue;
             //return "Emmm..dunno";
         }
 
         @Override
         protected Object doInBackground(Object[] params) {
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-                String returnedLine;
-                String attendance;
             try{
                 returnedLine = makeRequest("http://pict.ethdigitalcampus.com:80/DCWeb/authenticate.do");
                 Log.i("YOLO","ReturnedLine is:" + returnedLine);
@@ -141,7 +148,8 @@ public class MainActivity extends ActionBarActivity  {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"Attendance is" + attendance,Toast.LENGTH_LONG ).show();
+           // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
         }
     }
 }
