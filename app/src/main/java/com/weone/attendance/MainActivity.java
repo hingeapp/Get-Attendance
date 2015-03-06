@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity  {
                     for(int i = 0; i < parts.length; i++) {
                         if(parts[i].length() > 1)       //check for "-"
                         {
-                            if(! parts[i].equalsIgnoreCase("of")) {
+                            if(! parts[i].equalsIgnoreCase("of") && !parts[i].equalsIgnoreCase("and")) {
                                 if (parts[i].equalsIgnoreCase("th") || parts[i].equalsIgnoreCase("pr")) {
                                     //Log.i("Split", parts[i].substring(0, 2));
                                     //no need to add pr/th. its CG or CGL. selfexplanatory
@@ -164,7 +164,8 @@ public class MainActivity extends ActionBarActivity  {
                     percent.add(line.trim());
 
                     count++;
-                    Log.i("Summary", subject.get(count - 1)+" " + conducted.get(count - 1) + " "
+                    if( !conducted.get(count - 1).equalsIgnoreCase("0"))    //filters out zero conducted
+                        Log.i("Summary", subject.get(count - 1)+" " + conducted.get(count - 1) + " "
                             + attended.get(count - 1) +" " + percent.get(count - 1));
                 }
                 else if(line.contains("Average :")){
