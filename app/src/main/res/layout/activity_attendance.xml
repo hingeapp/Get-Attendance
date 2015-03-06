@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.weone.attendance.AttendanceActivity">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        >
+
+        <RelativeLayout
+            android:id="@+id/header_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="@color/green"
+            >
+            <TextView
+                android:id="@+id/quote"
+                android:layout_marginBottom="5dp"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/percentage"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed"
+                android:text="A cool quote"/>
+            <TextView
+                android:id="@+id/percentage"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="72sp"
+                android:text="77%"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold"
+                />
+
+            <TextView
+
+                android:id="@+id/name"
+                android:layout_weight="1"
+                android:textColor="@color/primaryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aditya Shirole"
+                android:maxLines="2"
+                android:textSize="36sp"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_below="@id/percentage"
+                android:layout_centerHorizontal="true"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:orientation="horizontal"
+            android:background="@color/divider"
+            >
+            </LinearLayout>
+
+        <ListView
+            android:layout_weight="4"
+            android:id="@+id/subject_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"></ListView>
+
+
+    </LinearLayout>
+</RelativeLayout>

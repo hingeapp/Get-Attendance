@@ -1,5 +1,6 @@
 package com.weone.attendance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -7,11 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,39 +26,55 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class MainActivity extends ActionBarActivity  {
-    public TextView tv1,tv2;
-    public EditText ed1,ed2;
-    public Button bt1;
-    public String loginId ;
-    public String password ;
+public class AttendanceActivity extends ActionBarActivity {
+
+    protected String loginId;
+    protected String password;
+    protected String name;
+    protected String attendance;
+
+    protected ListView mDetailsList;
+    protected TextView mName;
+    protected TextView mAttendance;
+
+    protected SubjectAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setContentView(R.layout.activity_attendance);
+        ArrayList<SubjectHolder> holders = new ArrayList<SubjectHolder>();
 
-        ed1=(EditText)findViewById(R.id.ed1);
-        ed2=(EditText)findViewById(R.id.ed2);
-        tv1=(TextView)findViewById(R.id.tv1);
-        tv2=(TextView)findViewById(R.id.tv2);
-        bt1=(Button)findViewById(R.id.bt1);
-        bt1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginId=ed1.getText().toString().toUpperCase();
-                password=ed2.getText().toString();
-                Log.i("Starting: ","Getting the attendance");
-                response task = new response();
-                task.execute();
-            }
-        });
+        Intent intent = getIntent();
+        holders = intent.getParcelableArrayListExtra("holder");
+        name = intent.getStringExtra("name");
+        attendance = intent.getStringExtra("attendance");
+
+        Log.i("name is : ",name);
+        Log.i("Att is : ",attendance);
+        Log.i("Subjectnamesample : ",holders.get(0).getSubjectName()+" " + holders.get(0).getPercentAttendance());
+
+        mDetailsList = (ListView)findViewById(R.id.subject_list);
+        mName = (TextView) findViewById(R.id.name);
+        mAttendance = (TextView) findViewById(R.id.percentage);
+
+        mName.setText(name);
+        mAttendance.setText(attendance);
+
+        mAdapter = new SubjectAdapter(AttendanceActivity.this,
+                R.layout.subject_item,
+                holders);
+
+        mDetailsList.setAdapter(mAdapter);
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_attendance, menu);
         return true;
     }
 
@@ -233,16 +247,8 @@ public class MainActivity extends ActionBarActivity  {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             //setProgressBarIndeterminateVisibility(false);
-            Toast.makeText(MainActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
+            Toast.makeText(AttendanceActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
             // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
-
-            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-            intent.putParcelableArrayListExtra("holder",holders);
-            intent.putExtra("name",name);
-            intent.putExtra("attendance",attendance);
-            startActivity(intent);
-
         }
     }
 }
-
