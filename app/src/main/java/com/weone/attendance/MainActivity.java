@@ -118,7 +118,34 @@ public class MainActivity extends ActionBarActivity  {
                 }
                 else if(line.contains("<td align=left  class=MTTD8 colspan= ")){
                     line = reader.readLine();       //this contains subject.
-                    subject.add(line);
+                    String parts[] = line.split(" ");
+                    StringBuilder builder = new StringBuilder();
+                    int j = 0;
+                    for(int i = 0; i < parts.length; i++) {
+                        if(parts[i].length() > 1)       //check for "-"
+                        {
+                            if(! parts[i].equalsIgnoreCase("of")) {
+                                if (parts[i].equalsIgnoreCase("th") || parts[i].equalsIgnoreCase("pr")) {
+                                    //Log.i("Split", parts[i].substring(0, 2));
+                                    //no need to add pr/th. its CG or CGL. selfexplanatory
+                                    //builder.append( " " + parts[i].substring(0,2) );
+                                }
+                                else if(parts[i].contains("III") && !parts[i].contains("-III")){
+                                    builder.append("3");
+                                }
+                                else if(parts[i].contains("TUT")) {
+                                    builder.append(" TUT");
+                                }
+                            else {
+                                    //Log.i("Split: ", parts[i].substring(0, 1));
+                                    builder.append(parts[i].substring(0, 1));
+                                }
+                            }
+                        }
+                    }
+                    //Log.i("Subject please: ", builder.toString());
+                    //subject.add(line);
+                    subject.add(builder.toString());
                     line = reader.readLine();
                     line = reader.readLine();
                     line = reader.readLine();       //this contains conducted lectures
@@ -157,6 +184,8 @@ public class MainActivity extends ActionBarActivity  {
                     //not this line
                 }
             }
+            if(returnValue == null)
+                return "An Error occured.";
             return returnValue;
             //return "Emmm..dunno";
         }
@@ -166,7 +195,6 @@ public class MainActivity extends ActionBarActivity  {
             CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
             try{
                 String yolo = makeRequest("http://pict.ethdigitalcampus.com:80/DCWeb/authenticate.do");
-                Log.i("YOLO","Name is:" + returnedLine);
             }catch (IOException e){
                 e.printStackTrace();
             }
