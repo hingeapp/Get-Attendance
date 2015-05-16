@@ -2,19 +2,28 @@ package com.weone.attendance;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +45,9 @@ public class AttendanceActivity extends ActionBarActivity {
     protected ListView mDetailsList;
     protected TextView mName;
     protected TextView mAttendance;
+    protected TextView mQuote;
+    protected RelativeLayout mHeader;
+    protected TextView mShare;
 
     protected SubjectAdapter mAdapter;
 
@@ -58,15 +70,89 @@ public class AttendanceActivity extends ActionBarActivity {
         mDetailsList = (ListView)findViewById(R.id.subject_list);
         mName = (TextView) findViewById(R.id.name);
         mAttendance = (TextView) findViewById(R.id.percentage);
+        mQuote = (TextView) findViewById(R.id.quote);
+        mHeader = (RelativeLayout) findViewById(R.id.header_view);
+        mShare = (TextView) findViewById(R.id.share);
 
         mName.setText(name);
         mAttendance.setText(attendance);
+
+        Log.i("SUbSTRING is",attendance.substring(0,2));
+
+        if(attendance.length() == 2){
+            /**
+             * 2 digit number like 22 or 78
+             */
+            if (Integer.parseInt(attendance.substring(0,2)) < 75) {
+                mQuote.setText("Defaulter!");
+                mHeader.setBackgroundColor(getResources().getColor(R.color.red));
+            } else if (Integer.parseInt(attendance.substring(0,2)) < 80) {
+                mQuote.setText("On the Brink!");
+                mHeader.setBackgroundColor(getResources().getColor(R.color.orange));
+            } else {
+                mQuote.setText("Can afford to bunk!");
+            }
+        }
+        else if(attendance.charAt(2) == '.' ) {
+            //2 digit attendance ex- 82.1 , i.e. not 100
+
+            if (Integer.parseInt(attendance.substring(0,2)) < 75) {
+                mQuote.setText("Defaulter!");
+                mHeader.setBackgroundColor(getResources().getColor(R.color.red));
+            } else if (Integer.parseInt(attendance.substring(0,2)) < 80) {
+                mQuote.setText("On the Brink!");
+                mHeader.setBackgroundColor(getResources().getColor(R.color.orange));
+            } else {
+                mQuote.setText("Can afford to bunk!");
+            }
+        }
+        else {
+            mQuote.setText("Seriously?");
+        }
 
         mAdapter = new SubjectAdapter(AttendanceActivity.this,
                 R.layout.subject_item,
                 holders);
 
         mDetailsList.setAdapter(mAdapter);
+
+        mShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bitmap bmScreen;
+                mHeader.setDrawingCacheEnabled(true);
+                bmScreen = mHeader.getDrawingCache();
+                saveImage(bmScreen);
+            }
+        });
+    }
+
+
+    /**
+     * Used to save screenshot
+     * @param
+     * @return
+     */
+    protected void saveImage(Bitmap bmScreen2) {
+        // TODO Auto-generated method stub
+
+        Log.i("Saving","File");
+        // String fname = "Upload.png";
+        File saved_image_file = new File(
+                Environment.getExternalStorageDirectory()
+                        + "/captured_Bitmap.png");
+        if (saved_image_file.exists())
+            saved_image_file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(saved_image_file);
+            bmScreen2.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -247,8 +333,9 @@ public class AttendanceActivity extends ActionBarActivity {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             //setProgressBarIndeterminateVisibility(false);
-            Toast.makeText(AttendanceActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
+            Log.i("onPostExecute","Attendance of " + name + " is " + attendance);
             // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
+
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.weone.attendance;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +43,45 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
 
         SubjectHolder subject = subjects.get(position);
 
+        holder.percentLabel.setTextColor(mContext.getResources().getColor(android.R.color.black));
         holder.nameLabel.setText( subject.getSubjectName() );
         holder.attendedLabel.setText(subject.getAttendedLectures() + " / ");
         holder.conductedLabel.setText(subject.getConductedLectures());
-        holder.percentLabel.setText(subject.getPercentAttendance().substring(0,2)+" %");
+
+        String percent = subject.getPercentAttendance().substring(0, 2);
+
+        if(subject.getPercentAttendance().length() == 2) {
+            /**
+             * No decimal in attendance. eg- 78 or 88 & it is 2 digit
+             */
+            if (Integer.parseInt(percent) < 75) {
+                holder.percentLabel.setTextColor(mContext.getResources().getColor(R.color.red));
+            }
+        }
+        else if(subject.getPercentAttendance().length() > 2){
+            /**
+             * Length is more than 2. Could be 3 digit number or a 2 digit with decimal eg- 99.1 or 100
+             */
+            if(subject.getPercentAttendance().charAt(2) == '0'){
+                percent = "100";
+            }
+            else if(subject.getPercentAttendance().charAt(2) == '.'){
+                /**
+                 * Confirm if it is indeed a 2 digit number
+                 */
+                if (Integer.parseInt(percent) < 75) {
+                    holder.percentLabel.setTextColor(mContext.getResources().getColor(R.color.red));
+                }
+            }
+        }
+        else if(subject.getPercentAttendance().charAt(1) == '.' || subject.getPercentAttendance().length() == 1){
+            /**
+             * Attendance is single digit. eg - 1.1 or 2
+             */
+            holder.percentLabel.setTextColor(mContext.getResources().getColor(R.color.red));
+        }
+
+        holder.percentLabel.setText(percent +" %");
         return convertView;
     }
 

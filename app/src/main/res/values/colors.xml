@@ -8,4 +8,6 @@
     <color name="secondaryText">#727272</color>
     <color name="divider">#B6B6B6</color>
     <color name="lightPrimaryColor">#C8E6C9</color>
+    <color name="red">#F44336</color>
+    <color name="orange">#FF9800</color>
 </resources>

@@ -42,9 +42,8 @@ public class MainActivity extends ActionBarActivity  {
 
         ed1=(EditText)findViewById(R.id.ed1);
         ed2=(EditText)findViewById(R.id.ed2);
-        tv1=(TextView)findViewById(R.id.tv1);
-        tv2=(TextView)findViewById(R.id.tv2);
         bt1=(Button)findViewById(R.id.bt1);
+
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
