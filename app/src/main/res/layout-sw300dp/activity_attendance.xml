@@ -29,17 +29,23 @@
                 android:text="Share"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"/>
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:weightSum="5">
                 <TextView
                     android:id="@+id/quote"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="0dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:layout_above="@+id/percentage"
                     android:layout_centerHorizontal="true"
                     android:textColor="#51000000"
@@ -50,9 +56,10 @@
                     android:id="@+id/percentage"
                     android:textColor="@android:color/white"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
                     android:layout_centerInParent="true"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display4"
                     android:text="77%"
                     android:fontFamily="sans-serif-light"
                     android:textStyle="bold"
@@ -61,18 +68,19 @@
 
                 <TextView
                     android:id="@+id/name"
+                    android:layout_weight="1"
                     android:textColor="@color/primaryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Aditya Shirole"
                     android:maxLines="2"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
                     android:fontFamily="sans-serif-condensed"
                     android:layout_below="@id/percentage"
                     android:layout_centerHorizontal="true"
                     android:ellipsize="end"
-                    android:layout_alignParentBottom="true"
                     />
+            </LinearLayout>
 
         </RelativeLayout>
 
