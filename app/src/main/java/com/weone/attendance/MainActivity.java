@@ -165,6 +165,7 @@ public class MainActivity extends ActionBarActivity  {
                 else if(line.contains("<td align=left  class=MTTD8 colspan= ")){
                     SubjectHolder tempHolder = new SubjectHolder();
                     line = reader.readLine();       //this contains subject.
+                    tempHolder.setFullSubjectName(line.trim());
                     String parts[] = line.split(" ");
                     StringBuilder builder = new StringBuilder();
                     int j = 0;

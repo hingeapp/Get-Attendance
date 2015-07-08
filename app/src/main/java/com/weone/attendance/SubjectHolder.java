@@ -8,9 +8,12 @@ import android.os.Parcelable;
  */
 public class SubjectHolder implements Parcelable{
     public String subjectName;
+    public String FullSubjectName;
     public String conductedLectures;
     public String attendedLectures;
     public String percentAttendance;
+
+
 
     public SubjectHolder() {
     }
@@ -25,6 +28,13 @@ public class SubjectHolder implements Parcelable{
 
     public String getConductedLectures() {
         return conductedLectures;
+    }
+
+    public String getFullSubjectName() {
+        return FullSubjectName;
+    }
+    public void setFullSubjectName(String fullSubjectName) {
+        this.FullSubjectName = fullSubjectName;
     }
 
     public void setConductedLectures(String conductedLectures) {

@@ -58,6 +58,7 @@ public class AttendanceActivity extends ActionBarActivity {
         setContentView(R.layout.activity_attendance);
         ArrayList<SubjectHolder> holders = new ArrayList<SubjectHolder>();
 
+
         Intent intent = getIntent();
         holders = intent.getParcelableArrayListExtra("holder");
         name = intent.getStringExtra("name");
@@ -180,7 +181,7 @@ public class AttendanceActivity extends ActionBarActivity {
     }
 
 
-    public class response extends AsyncTask {
+   /* public class response extends AsyncTask {
         protected String name;
         protected String returnedLine;
         protected String attendance;
@@ -337,5 +338,5 @@ public class AttendanceActivity extends ActionBarActivity {
             // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
 
         }
-    }
+    }*/
 }
