@@ -1,7 +1,11 @@
 package com.weone.attendance;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +30,12 @@ import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 
 public class MainActivity extends ActionBarActivity  {
@@ -34,7 +44,7 @@ public class MainActivity extends ActionBarActivity  {
     public Button bt1;
     public String loginId ;
     public String password ;
-
+    protected Integer i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +53,52 @@ public class MainActivity extends ActionBarActivity  {
         ed1=(EditText)findViewById(R.id.ed1);
         ed2=(EditText)findViewById(R.id.ed2);
         bt1=(Button)findViewById(R.id.bt1);
+        i = 0;
 
-        bt1.setOnClickListener(new View.OnClickListener() {
+
+        final TourGuide tourGuide = new TourGuide(this).with(TourGuide.Technique.Click)
+                .setPointer(new Pointer())
+                .setToolTip(new ToolTip().setTitle("Welcome").setDescription("Enter your details and click on Login to get attendance"))
+                .setOverlay(new Overlay())
+                .playOn(bt1);
+
+        isAppInBackground(this);
+
+                bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginId=ed1.getText().toString().toUpperCase();
-                password=ed2.getText().toString();
-                Log.i("Starting: ","Getting the attendance");
-                response task = new response();
-                task.execute();
+                if(i == 0) {
+                    tourGuide.cleanUp();
+                    i++;
+                }
+                else {
+                    loginId = ed1.getText().toString().toUpperCase();
+                    password = ed2.getText().toString();
+
+                    if(loginId.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(MainActivity.this,"Empty",Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Log.i("Starting: ", "Getting the attendance");
+                        response task = new response();
+                        task.execute();
+                    }
+
+                }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isAppInBackground(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isAppInBackground(this);
     }
 
     @Override
@@ -115,6 +160,7 @@ public class MainActivity extends ActionBarActivity  {
                     int a = line.indexOf("colspan=\"2\">");
                     Log.i("Name", line.substring(a + 12, line.length() - 1));
                     name = line.substring(a+12,line.length()-1);
+                    Log.i("NAME IS",name);
                 }
                 else if(line.contains("<td align=left  class=MTTD8 colspan= ")){
                     SubjectHolder tempHolder = new SubjectHolder();
@@ -232,16 +278,53 @@ public class MainActivity extends ActionBarActivity  {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             //setProgressBarIndeterminateVisibility(false);
-            Toast.makeText(MainActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
             // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
             intent.putParcelableArrayListExtra("holder",holders);
             intent.putExtra("name",name);
-            intent.putExtra("attendance",attendance);
+            intent.putExtra("attendance", attendance);
             startActivity(intent);
 
         }
+    }
+
+    private boolean isAppInBackground(Context context) {
+        boolean isInBackground = true;
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    for (String activeProcess : processInfo.pkgList) {
+                        if (activeProcess.equals(context.getPackageName())) {
+                            isInBackground = false;
+                            Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+                            Log.i("STATUS","FOREGROUND");
+                        }
+                        else{
+                            Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+                            Log.i("STATUS","Background");
+                        }
+                    }
+                }
+            }
+        } else {
+            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if (componentInfo.getPackageName().equals(context.getPackageName())) {
+                isInBackground = false;
+                Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+                Log.i("STATUS","FOREGROUND");
+            }
+            else{
+                Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+                Log.i("STATUS","Background");
+            }
+        }
+
+        return isInBackground;
     }
 }
 

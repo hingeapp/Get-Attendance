@@ -63,9 +63,9 @@ public class AttendanceActivity extends ActionBarActivity {
         name = intent.getStringExtra("name");
         attendance = intent.getStringExtra("attendance");
 
-        Log.i("name is : ",name);
-        Log.i("Att is : ",attendance);
-        Log.i("Subjectnamesample : ",holders.get(0).getSubjectName()+" " + holders.get(0).getPercentAttendance());
+//        Log.i("name is : ",name);
+//        Log.i("Att is : ",attendance);
+//        Log.i("Subjectnamesample : ",holders.get(0).getSubjectName()+" " + holders.get(0).getPercentAttendance());
 
         mDetailsList = (ListView)findViewById(R.id.subject_list);
         mName = (TextView) findViewById(R.id.name);
