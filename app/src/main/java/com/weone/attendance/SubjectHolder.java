@@ -14,7 +14,6 @@ public class SubjectHolder implements Parcelable{
     public String percentAttendance;
 
 
-
     public SubjectHolder() {
     }
 
@@ -59,6 +58,7 @@ public class SubjectHolder implements Parcelable{
 
     protected SubjectHolder(Parcel in) {
         subjectName = in.readString();
+        FullSubjectName=in.readString();
         conductedLectures = in.readString();
         attendedLectures = in.readString();
         percentAttendance = in.readString();
@@ -72,6 +72,7 @@ public class SubjectHolder implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(subjectName);
+        dest.writeString(FullSubjectName);
         dest.writeString(conductedLectures);
         dest.writeString(attendedLectures);
         dest.writeString(percentAttendance);

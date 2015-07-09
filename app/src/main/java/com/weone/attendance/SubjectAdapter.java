@@ -2,7 +2,6 @@ package com.weone.attendance;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +34,7 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        final SubjectHolder subject = subjects.get(position);
+
         if(convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.subject_item,null);
             holder = new ViewHolder();
@@ -44,38 +43,37 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
             holder.conductedLabel = (TextView) convertView.findViewById(R.id.conductedLabel);
             holder.percentLabel = (TextView) convertView.findViewById(R.id.percentLabel);
             holder.tipContainer=(ToolTipLayout) convertView.findViewById(R.id.tooltip_container);
-            holder.nameLabel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
-                            Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
-                    contentView.setLayoutParams(new LayoutParams(
-                            LayoutParams.MATCH_PARENT,
-                            LayoutParams.WRAP_CONTENT
-                    ));
-
-                    ToolTip t = new Builder(getContext().getApplicationContext())
-                            .anchor(holder.nameLabel)
-                            .color(getContext().getResources().getColor(android.R.color.holo_orange_light))
-                            .gravity(Gravity.BOTTOM)
-                            .pointerSize(POINTER_SIZE)
-                            .contentView(contentView)
-                            .build();
-                    holder.tipContainer.addTooltip(t);
-                }
-            });
             convertView.setTag(holder);
         }
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-
+        SubjectHolder subject = subjects.get(position);
         holder.percentLabel.setTextColor(mContext.getResources().getColor(android.R.color.black));
         holder.nameLabel.setText( subject.getSubjectName() );
         holder.attendedLabel.setText(subject.getAttendedLectures() + " / ");
         holder.conductedLabel.setText(subject.getConductedLectures());
         String percent = subject.getPercentAttendance();
+        holder.nameLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
+                        Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
+                contentView.setLayoutParams(new LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT
+                ));
 
+                ToolTip t = new Builder(getContext().getApplicationContext())
+                        .anchor(holder.nameLabel)
+                        .color(getContext().getResources().getColor(android.R.color.holo_orange_light))
+                        .gravity(Gravity.BOTTOM)
+                        .pointerSize(POINTER_SIZE)
+                        .contentView(contentView)
+                        .build();
+                holder.tipContainer.addTooltip(t);
+            }
+        });
         if(percent.length() > 2) {
             percent = subject.getPercentAttendance().substring(0, 2);
         }

@@ -4,11 +4,13 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,8 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +53,8 @@ public class MainActivity extends ActionBarActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         ed1=(EditText)findViewById(R.id.ed1);
         ed2=(EditText)findViewById(R.id.ed2);
         bt1=(Button)findViewById(R.id.bt1);
@@ -65,28 +70,31 @@ public class MainActivity extends ActionBarActivity  {
         isAppInBackground(this);
 
                 bt1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(i == 0) {
-                    tourGuide.cleanUp();
-                    i++;
-                }
-                else {
-                    loginId = ed1.getText().toString().toUpperCase();
-                    password = ed2.getText().toString();
+                    @Override
+                    public void onClick(View v) {
+                        if (i == 0) {
+                            tourGuide.cleanUp();
+                            i++;
+                        } else {
+                            loginId = ed1.getText().toString().toUpperCase();
+                            password = ed2.getText().toString();
 
-                    if(loginId.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(MainActivity.this,"Empty",Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Log.i("Starting: ", "Getting the attendance");
-                        response task = new response();
-                        task.execute();
-                    }
+                            if (loginId.isEmpty() || password.isEmpty()) {
+                                Toast.makeText(MainActivity.this, "Empty", Toast.LENGTH_LONG).show();
+                            } else {
+                                // Log.i("Starting: ", "Getting the attendance");
 
-                }
-            }
-        });
+                                if (!hasActiveInternetConnection())
+                                    Toast.makeText(MainActivity.this, "Network not Available", Toast.LENGTH_LONG).show();
+                                else {
+                                    response task = new response();
+                                    task.execute();
+                                }
+                            }
+
+                        }
+                    }
+                });
     }
 
     @Override
@@ -99,6 +107,27 @@ public class MainActivity extends ActionBarActivity  {
     protected void onResume() {
         super.onResume();
         isAppInBackground(this);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+    public boolean hasActiveInternetConnection() {
+        if (isNetworkAvailable()) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+            }
+        } else {
+        }
+        return false;
     }
 
     @Override
@@ -158,9 +187,9 @@ public class MainActivity extends ActionBarActivity  {
                     //Log.i("YOLO","Line found"+line.substring(12));
                     line = reader.readLine();
                     int a = line.indexOf("colspan=\"2\">");
-                    Log.i("Name", line.substring(a + 12, line.length() - 1));
+                    //Log.i("Name", line.substring(a + 12, line.length() - 1));
                     name = line.substring(a+12,line.length()-1);
-                    Log.i("NAME IS",name);
+                    //Log.i("NAME IS",name);
                 }
                 else if(line.contains("<td align=left  class=MTTD8 colspan= ")){
                     SubjectHolder tempHolder = new SubjectHolder();
@@ -217,15 +246,6 @@ public class MainActivity extends ActionBarActivity  {
 
                     holders.add(tempHolder);
                     count++;
-//                    if( !conducted.get(count - 1).equalsIgnoreCase("0"))    //filters out zero conducted
-//                        Log.i("Summary", subject.get(count - 1)+" " + conducted.get(count - 1) + " "
-//                            + attended.get(count - 1) +" " + percent.get(count - 1));
-
-                    if( ! (holders.get(count -1)).getConductedLectures().equalsIgnoreCase("0"))    //filters out zero conducted
-                        Log.i("Summary", (holders.get(count -1)).getSubjectName()+" " +
-                                (holders.get(count -1)).getConductedLectures() + " "+
-                                (holders.get(count -1)).getAttendedLectures() +" " +
-                                (holders.get(count -1)).getPercentAttendance());
                 }
                 else if(line.contains("Average :")){
                     line = reader.readLine();
@@ -265,9 +285,10 @@ public class MainActivity extends ActionBarActivity  {
                 e.printStackTrace();
             }
 
+
             try{
                 attendance = makeRequest("http://pict.ethdigitalcampus.com/DCWeb/form/jsp_sms/StudentsPersonalFolder_pict.jsp?dashboard=1");
-                Log.i("YOLO","Attendance is "+ attendance);
+               // Log.i("YOLO","Attendance is "+ attendance);
 
             }catch (IOException e){
                 e.printStackTrace();
@@ -301,12 +322,12 @@ public class MainActivity extends ActionBarActivity  {
                     for (String activeProcess : processInfo.pkgList) {
                         if (activeProcess.equals(context.getPackageName())) {
                             isInBackground = false;
-                            Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
-                            Log.i("STATUS","FOREGROUND");
+                            //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+                           // Log.i("STATUS","FOREGROUND");
                         }
                         else{
-                            Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
-                            Log.i("STATUS","Background");
+                           // Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+                            //Log.i("STATUS","Background");
                         }
                     }
                 }
@@ -316,12 +337,12 @@ public class MainActivity extends ActionBarActivity  {
             ComponentName componentInfo = taskInfo.get(0).topActivity;
             if (componentInfo.getPackageName().equals(context.getPackageName())) {
                 isInBackground = false;
-                Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
-                Log.i("STATUS","FOREGROUND");
+                //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+                //Log.i("STATUS","FOREGROUND");
             }
             else{
-                Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
-                Log.i("STATUS","Background");
+                //Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+               // Log.i("STATUS","Background");
             }
         }
 
