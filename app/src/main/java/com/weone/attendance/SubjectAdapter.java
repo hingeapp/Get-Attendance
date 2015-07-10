@@ -60,7 +60,7 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
                 View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
                         Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
                 contentView.setLayoutParams(new LayoutParams(
-                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT
                 ));
 

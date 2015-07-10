@@ -44,6 +44,12 @@ import tourguide.tourguide.TourGuide;
 
 public class MainActivity extends ActionBarActivity  {
     public TextView tv1,tv2;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     public EditText ed1,ed2;
     public Button bt1;
     public String loginId ;
@@ -80,12 +86,15 @@ public class MainActivity extends ActionBarActivity  {
                             password = ed2.getText().toString();
 
                             if (loginId.isEmpty() || password.isEmpty()) {
-                                Toast.makeText(MainActivity.this, "Empty", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, "Field Are Empty", Toast.LENGTH_LONG).show();
                             } else {
                                 // Log.i("Starting: ", "Getting the attendance");
+                                    bt1.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
 
-                                if (!hasActiveInternetConnection())
+                                if (!hasActiveInternetConnection()) {
                                     Toast.makeText(MainActivity.this, "Network not Available", Toast.LENGTH_LONG).show();
+                                    bt1.setBackgroundColor(getResources().getColor(R.color.loginButton));
+                                }
                                 else {
                                     response task = new response();
                                     task.execute();
