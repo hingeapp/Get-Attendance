@@ -11,6 +11,7 @@
 
 
     <LinearLayout
+        android:id="@+id/holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -71,5 +72,25 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
     </LinearLayout>
+
+    <TextView
+        android:textColor="#FFFFFF"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="Made by H!nge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:layout_centerHorizontal="true"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"
+        android:layout_above="@id/holder"
+        android:text="Get Attendance!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

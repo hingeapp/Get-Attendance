@@ -31,6 +31,7 @@ public class AttendanceActivity extends ActionBarActivity {
     protected TextView mQuote;
     protected RelativeLayout mHeader;
     protected TextView mShare;
+    protected TextView creditText;
 
     protected SubjectAdapter mAdapter;
 
@@ -57,6 +58,7 @@ public class AttendanceActivity extends ActionBarActivity {
         mShare = (TextView) findViewById(R.id.share);
         mName.setText(name);
         mAttendance.setText(attendance);
+        creditText = (TextView) findViewById(R.id.creditText);
 
         if(attendance.length() == 2){
             /**
@@ -100,8 +102,12 @@ public class AttendanceActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 Bitmap bmScreen;
+                creditText.setVisibility(View.VISIBLE);
+                mShare.setVisibility(View.INVISIBLE);
                 mHeader.setDrawingCacheEnabled(true);
                 bmScreen = mHeader.getDrawingCache();
+                creditText.setVisibility(View.INVISIBLE);
+                mShare.setVisibility(View.VISIBLE);
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("image/jpeg");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();

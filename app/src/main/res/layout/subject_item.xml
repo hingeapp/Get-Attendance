@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,10 +7,10 @@
 <LinearLayout
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     android:background="#FFFFFF"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <TextView
         android:id="@+id/nameLabel"
@@ -24,6 +24,8 @@
         android:textSize="22sp"
         android:layout_marginLeft="15dp"
         android:layout_gravity="left"
+        android:marqueeRepeatLimit="5"
+        android:maxLines="1"
         />
 
 
@@ -71,9 +73,15 @@
         android:layout_gravity="right"
         />
 </LinearLayout>
-    <com.ryanharter.android.tooltips.ToolTipLayout
-        android:id="@+id/tooltip_container"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="1dp"
+        android:background="@color/Gray"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        ></View>
 
-</FrameLayout>
+
+
+</RelativeLayout>

@@ -1,9 +1,11 @@
 package com.weone.attendance;
 
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -34,6 +36,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import tourguide.tourguide.Overlay;
@@ -44,6 +47,10 @@ import tourguide.tourguide.TourGuide;
 
 public class MainActivity extends ActionBarActivity  {
     public TextView tv1,tv2;
+    protected SharedPreferences sharedPreferences;
+    protected SharedPreferences.Editor editor;
+    protected TourGuide tourGuide = null;
+    protected ProgressDialog dialog;
 
     @Override
     protected void onStart() {
@@ -66,28 +73,42 @@ public class MainActivity extends ActionBarActivity  {
         bt1=(Button)findViewById(R.id.bt1);
         i = 0;
 
+        sharedPreferences = getSharedPreferences("default",MODE_PRIVATE);
+        if(!sharedPreferences.getBoolean("isTaught",false)) {
+          tourGuide = new TourGuide(this).with(TourGuide.Technique.Click)
+                    .setPointer(new Pointer())
+                    .setToolTip(new ToolTip().setTitle("Welcome").setDescription("Enter your details and click on Login to get attendance"))
+                    .setOverlay(new Overlay())
+                    .playOn(bt1);
+        }
+        else{
+            i++;
+        }
 
-        final TourGuide tourGuide = new TourGuide(this).with(TourGuide.Technique.Click)
-                .setPointer(new Pointer())
-                .setToolTip(new ToolTip().setTitle("Welcome").setDescription("Enter your details and click on Login to get attendance"))
-                .setOverlay(new Overlay())
-                .playOn(bt1);
-
-        isAppInBackground(this);
 
                 bt1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (i == 0) {
-                            tourGuide.cleanUp();
+
+                            if(tourGuide != null){
+                                tourGuide.cleanUp();
+                                editor = sharedPreferences.edit();
+                                editor.putBoolean("isTaught",true);
+                                editor.commit();
+                            }
+
                             i++;
                         } else {
                             loginId = ed1.getText().toString().toUpperCase();
                             password = ed2.getText().toString();
 
                             if (loginId.isEmpty() || password.isEmpty()) {
-                                Toast.makeText(MainActivity.this, "Field Are Empty", Toast.LENGTH_LONG).show();
-                            } else {
+                                Toast.makeText(MainActivity.this, "Fields Cannot be Empty", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                dialog = ProgressDialog.show(MainActivity.this,"Fetching","Please wait while we get your attendance");
+
                                 // Log.i("Starting: ", "Getting the attendance");
                                     bt1.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
 
@@ -109,13 +130,13 @@ public class MainActivity extends ActionBarActivity  {
     @Override
     protected void onPause() {
         super.onPause();
-        isAppInBackground(this);
+        //isAppInBackground(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        isAppInBackground(this);
+       // isAppInBackground(this);
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -311,7 +332,24 @@ public class MainActivity extends ActionBarActivity  {
             //setProgressBarIndeterminateVisibility(false);
             //Toast.makeText(MainActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
             // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
+            int count = 0;
+            for(SubjectHolder holder : holders){
+                if(!holder.getConductedLectures().equalsIgnoreCase("0")){
+                    Collections.swap(holders,holders.indexOf(holder),count);
+                    count++;
+                }
+                if(holder.getSubjectName().equalsIgnoreCase("DMS")){
+                    holder.setSubjectName("DBMS");
+                }
+                if(holder.getSubjectName().equalsIgnoreCase("DMSL")){
+                    holder.setSubjectName("DLAB");
+                }
+            }
 
+            if(dialog != null){
+                dialog.dismiss();
+                dialog = null;
+            }
             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
             intent.putParcelableArrayListExtra("holder",holders);
             intent.putExtra("name",name);

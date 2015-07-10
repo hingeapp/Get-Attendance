@@ -42,7 +42,7 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
             holder.attendedLabel = (TextView) convertView.findViewById(R.id.attendedLabel);
             holder.conductedLabel = (TextView) convertView.findViewById(R.id.conductedLabel);
             holder.percentLabel = (TextView) convertView.findViewById(R.id.percentLabel);
-            holder.tipContainer=(ToolTipLayout) convertView.findViewById(R.id.tooltip_container);
+//            holder.tipContainer=(ToolTipLayout) convertView.findViewById(R.id.tooltip_container);
             convertView.setTag(holder);
         }
         else {
@@ -50,30 +50,32 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
         }
         SubjectHolder subject = subjects.get(position);
         holder.percentLabel.setTextColor(mContext.getResources().getColor(android.R.color.black));
-        holder.nameLabel.setText( subject.getSubjectName() );
+//        holder.nameLabel.setText( subject.getSubjectName() );
+        holder.nameLabel.setText(subject.getSubjectName());
         holder.attendedLabel.setText(subject.getAttendedLectures() + " / ");
         holder.conductedLabel.setText(subject.getConductedLectures());
         String percent = subject.getPercentAttendance();
-        holder.nameLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
-                        Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
-                contentView.setLayoutParams(new LayoutParams(
-                        LayoutParams.WRAP_CONTENT,
-                        LayoutParams.WRAP_CONTENT
-                ));
-
-                ToolTip t = new Builder(getContext().getApplicationContext())
-                        .anchor(holder.nameLabel)
-                        .color(getContext().getResources().getColor(android.R.color.holo_orange_light))
-                        .gravity(Gravity.BOTTOM)
-                        .pointerSize(POINTER_SIZE)
-                        .contentView(contentView)
-                        .build();
-                holder.tipContainer.addTooltip(t);
-            }
-        });
+//        holder.nameLabel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
+//                        Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
+//                contentView.setLayoutParams(new LayoutParams(
+//                        LayoutParams.WRAP_CONTENT,
+//                        LayoutParams.WRAP_CONTENT
+//                ));
+//
+//
+//                ToolTip t = new Builder(getContext().getApplicationContext())
+//                        .anchor(holder.nameLabel)
+//                        .color(getContext().getResources().getColor(android.R.color.holo_orange_light))
+//                        .gravity(Gravity.BOTTOM)
+//                        .pointerSize(POINTER_SIZE)
+//                        .contentView(contentView)
+//                        .build();
+//                holder.tipContainer.addTooltip(t);
+//            }
+//        });
         if(percent.length() > 2) {
             percent = subject.getPercentAttendance().substring(0, 2);
         }
@@ -136,6 +138,5 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
         TextView conductedLabel;
         TextView attendedLabel;
         TextView percentLabel;
-        ToolTipLayout tipContainer;
     }
 }

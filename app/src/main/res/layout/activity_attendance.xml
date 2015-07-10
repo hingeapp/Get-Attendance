@@ -26,12 +26,13 @@
                 android:id="@+id/share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Share"
+                android:text="Tap to Share"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentLeft="true"
+                android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/quote"
@@ -73,6 +74,17 @@
                     android:ellipsize="end"
                     android:layout_alignParentBottom="true"
                     />
+            <TextView
+                android:id="@+id/creditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:text="Shared via Get Attendance by H!nge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="invisible"/>
 
         </RelativeLayout>
 
