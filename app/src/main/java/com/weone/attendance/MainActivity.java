@@ -74,10 +74,17 @@ public class MainActivity extends ActionBarActivity  {
         i = 0;
 
         sharedPreferences = getSharedPreferences("default",MODE_PRIVATE);
+
+        if (sharedPreferences.getBoolean("isEdited",false))
+        {
+            ed1.setText(sharedPreferences.getString("username","test"));
+            ed2.setText(sharedPreferences.getString("password","pass"));
+        }
+
         if(!sharedPreferences.getBoolean("isTaught",false)) {
-          tourGuide = new TourGuide(this).with(TourGuide.Technique.Click)
+            tourGuide = new TourGuide(this).with(TourGuide.Technique.Click)
                     .setPointer(new Pointer())
-                    .setToolTip(new ToolTip().setTitle("Welcome").setDescription("Enter your details and click on Login to get attendance"))
+                    .setToolTip(new ToolTip().setTitle("Welcome").setDescription("Enter details & click on Login to get attendance"))
                     .setOverlay(new Overlay())
                     .playOn(bt1);
         }
@@ -96,8 +103,8 @@ public class MainActivity extends ActionBarActivity  {
                                 editor = sharedPreferences.edit();
                                 editor.putBoolean("isTaught",true);
                                 editor.commit();
-                            }
 
+                            }
                             i++;
                         } else {
                             loginId = ed1.getText().toString().toUpperCase();
@@ -107,6 +114,13 @@ public class MainActivity extends ActionBarActivity  {
                                 Toast.makeText(MainActivity.this, "Fields Cannot be Empty", Toast.LENGTH_LONG).show();
                             }
                             else {
+
+                                editor = sharedPreferences.edit();
+                                editor.putBoolean("isEdited",true);
+                                editor.putString("username",loginId);
+                                editor.putString("password",password);
+                                editor.commit();
+
                                 dialog = ProgressDialog.show(MainActivity.this,"Fetching","Please wait while we get your attendance");
 
                                 // Log.i("Starting: ", "Getting the attendance");

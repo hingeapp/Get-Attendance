@@ -8,8 +8,8 @@ android {
         applicationId "com.weone.attendance"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName "1.5"
     }
     buildTypes {
         release {
@@ -22,6 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:cardview-v7:21.0.0'
     compile 'com.ryanharter.android.tooltips:library:0.0.3'
     compile ('com.github.worker8:tourguide:1.0.8-SNAPSHOT@aar'){
         transitive=true
