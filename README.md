@@ -5,6 +5,10 @@
 * Find subject wise attendance at a glance
 * Share your attedance effortlessly
 
+## [Install from Play Store](https://play.google.com/store/apps/details?id=com.weone.attendance)
+
+---
+
 ## How does the app look?
 #### Drop Dead Gorgeous. Seriously.
 
