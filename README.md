@@ -59,4 +59,4 @@ We are always looking for curious souls like you.
 
 Developed by 2 PICTians who wanted to do something more interesting than Bubble Sorting an array.
 
-[Sachin Shinde](sachinshinde7676@gmail.com) and [Aditya Shirole](adityacr7shirole@gmail.com)
+[Sachin Shinde](https://github.com/sacOO7) and [Aditya Shirole](https://github.com/AdityaShirole)
