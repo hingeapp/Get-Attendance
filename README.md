@@ -37,6 +37,8 @@
 ## How do I contribute?
 
 If you find any bugs or if you have any improvements,
+
+
 1. Fork this repo
 2. In case of a bug, create an Issue on this repo. We'll discuss how it can be resolved
 3. In case of any new feature or improvement, make a new branch. Make an initial commit. Create a Pull Request. We'll discuss how that feature can be implemented
@@ -45,6 +47,8 @@ If you find any bugs or if you have any improvements,
 ## I want to work with h!nge. How can I apply?
 #### Simply send an email to hinge.weone@gmail.com
 We are always looking for curious souls like you.
+
+*** 
 
 
 Developed by 2 PICTians who wanted to do something more interesting than Bubble Sorting an array.
