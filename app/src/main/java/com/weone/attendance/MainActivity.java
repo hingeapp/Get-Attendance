@@ -1,26 +1,20 @@
 package com.weone.attendance;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -32,42 +26,40 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
 import tourguide.tourguide.ToolTip;
 import tourguide.tourguide.TourGuide;
 
+/**
+ * Created by Sachin Shinde on 3/6/2015.
+ */
 
 public class MainActivity extends ActionBarActivity  {
-    public TextView tv1,tv2;
     protected SharedPreferences sharedPreferences;
     protected SharedPreferences.Editor editor;
     protected TourGuide tourGuide = null;
     protected ProgressDialog dialog;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     public EditText ed1,ed2;
     public Button bt1;
     public String loginId ;
     public String password ;
     protected Integer i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
         ed1=(EditText)findViewById(R.id.ed1);
         ed2=(EditText)findViewById(R.id.ed2);
         bt1=(Button)findViewById(R.id.bt1);
@@ -141,23 +133,13 @@ public class MainActivity extends ActionBarActivity  {
                 });
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //isAppInBackground(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-       // isAppInBackground(this);
-    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
+
     public boolean hasActiveInternetConnection() {
         if (isNetworkAvailable()) {
             try {
@@ -174,38 +156,13 @@ public class MainActivity extends ActionBarActivity  {
         return false;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
     public class response extends AsyncTask {
         protected String name;
-        protected String returnedLine;
         protected String attendance;
         protected ArrayList<SubjectHolder> holders = new ArrayList<SubjectHolder>();
-        //        protected ArrayList<String> subject= new ArrayList<String>();
-//        protected ArrayList<String> conducted= new ArrayList<String>();
-//        protected ArrayList<String> attended= new ArrayList<String>();
-//        protected ArrayList<String> percent= new ArrayList<String>();
+
         protected int count = 0;
 
 
@@ -332,7 +289,6 @@ public class MainActivity extends ActionBarActivity  {
 
             try{
                 attendance = makeRequest("http://pict.ethdigitalcampus.com/DCWeb/form/jsp_sms/StudentsPersonalFolder_pict.jsp?dashboard=1");
-               // Log.i("YOLO","Attendance is "+ attendance);
 
             }catch (IOException e){
                 e.printStackTrace();
@@ -343,9 +299,6 @@ public class MainActivity extends ActionBarActivity  {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            //setProgressBarIndeterminateVisibility(false);
-            //Toast.makeText(MainActivity.this, "Attendance of " + name + " is " + attendance, Toast.LENGTH_LONG).show();
-            // Toast.makeText(MainActivity.this,"Now what?",Toast.LENGTH_LONG).show();
             int count = 0;
             for(SubjectHolder holder : holders){
                 if(!holder.getConductedLectures().equalsIgnoreCase("0")){
@@ -369,45 +322,68 @@ public class MainActivity extends ActionBarActivity  {
             intent.putExtra("name",name);
             intent.putExtra("attendance", attendance);
             startActivity(intent);
-
         }
     }
 
-    private boolean isAppInBackground(Context context) {
-        boolean isInBackground = true;
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
-            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
-                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    for (String activeProcess : processInfo.pkgList) {
-                        if (activeProcess.equals(context.getPackageName())) {
-                            isInBackground = false;
-                            //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
-                           // Log.i("STATUS","FOREGROUND");
-                        }
-                        else{
-                           // Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
-                            //Log.i("STATUS","Background");
-                        }
-                    }
-                }
-            }
-        } else {
-            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-            ComponentName componentInfo = taskInfo.get(0).topActivity;
-            if (componentInfo.getPackageName().equals(context.getPackageName())) {
-                isInBackground = false;
-                //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
-                //Log.i("STATUS","FOREGROUND");
-            }
-            else{
-                //Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
-               // Log.i("STATUS","Background");
-            }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        return isInBackground;
+        return super.onOptionsItemSelected(item);
     }
+
+
+//    private boolean isAppInBackground(Context context) {
+//        boolean isInBackground = true;
+//        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+//            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+//            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+//                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+//                    for (String activeProcess : processInfo.pkgList) {
+//                        if (activeProcess.equals(context.getPackageName())) {
+//                            isInBackground = false;
+//                            //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+//                           // Log.i("STATUS","FOREGROUND");
+//                        }
+//                        else{
+//                           // Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+//                            //Log.i("STATUS","Background");
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+//            ComponentName componentInfo = taskInfo.get(0).topActivity;
+//            if (componentInfo.getPackageName().equals(context.getPackageName())) {
+//                isInBackground = false;
+//                //Toast.makeText(context,"In foreground",Toast.LENGTH_SHORT).show();
+//                //Log.i("STATUS","FOREGROUND");
+//            }
+//            else{
+//                //Toast.makeText(context,"In background",Toast.LENGTH_SHORT).show();
+//               // Log.i("STATUS","Background");
+//            }
+//        }
+//
+//        return isInBackground;
+//    }
+
 }
 

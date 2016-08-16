@@ -1,23 +1,18 @@
 package com.weone.attendance;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.ViewGroup.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.ryanharter.android.tooltips.ToolTip;
-import com.ryanharter.android.tooltips.ToolTipLayout;
-import com.ryanharter.android.tooltips.ToolTip.Builder;
 import java.util.ArrayList;
 
 /**
  * Created by Aditya Shirole on 3/6/2015.
  */
+
 public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
 
     protected Context mContext;
@@ -42,7 +37,7 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
             holder.attendedLabel = (TextView) convertView.findViewById(R.id.attendedLabel);
             holder.conductedLabel = (TextView) convertView.findViewById(R.id.conductedLabel);
             holder.percentLabel = (TextView) convertView.findViewById(R.id.percentLabel);
-//            holder.tipContainer=(ToolTipLayout) convertView.findViewById(R.id.tooltip_container);
+
             convertView.setTag(holder);
         }
         else {
@@ -55,27 +50,7 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
         holder.attendedLabel.setText(subject.getAttendedLectures() + " / ");
         holder.conductedLabel.setText(subject.getConductedLectures());
         String percent = subject.getPercentAttendance();
-//        holder.nameLabel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                View contentView = createToolTipView(subjects.get(position).getFullSubjectName(),
-//                        Color.RED, getContext().getResources().getColor(android.R.color.holo_orange_light));
-//                contentView.setLayoutParams(new LayoutParams(
-//                        LayoutParams.WRAP_CONTENT,
-//                        LayoutParams.WRAP_CONTENT
-//                ));
-//
-//
-//                ToolTip t = new Builder(getContext().getApplicationContext())
-//                        .anchor(holder.nameLabel)
-//                        .color(getContext().getResources().getColor(android.R.color.holo_orange_light))
-//                        .gravity(Gravity.BOTTOM)
-//                        .pointerSize(POINTER_SIZE)
-//                        .contentView(contentView)
-//                        .build();
-//                holder.tipContainer.addTooltip(t);
-//            }
-//        });
+
         if(percent.length() > 2) {
             percent = subject.getPercentAttendance().substring(0, 2);
         }
@@ -122,16 +97,6 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
         holder.percentLabel.setText(percent +" %");
         return convertView;
     }
-    public View createToolTipView(String text, int textColor, int bgColor) {
-        float density = getContext().getResources().getDisplayMetrics().density;
-        int padding = (int) (8 * density);
-        TextView contentView = new TextView(getContext().getApplicationContext());
-        contentView.setPadding(padding, padding, padding, padding);
-        contentView.setText(text);
-        contentView.setTextColor(textColor);
-        contentView.setBackgroundColor(bgColor);
-        return contentView;
-    }
 
     public static class ViewHolder {
         TextView nameLabel;
@@ -139,4 +104,17 @@ public class SubjectAdapter extends ArrayAdapter<SubjectHolder>{
         TextView attendedLabel;
         TextView percentLabel;
     }
+
+//    public View createToolTipView(String text, int textColor, int bgColor) {
+//        float density = getContext().getResources().getDisplayMetrics().density;
+//        int padding = (int) (8 * density);
+//        TextView contentView = new TextView(getContext().getApplicationContext());
+//        contentView.setPadding(padding, padding, padding, padding);
+//        contentView.setText(text);
+//        contentView.setTextColor(textColor);
+//        contentView.setBackgroundColor(bgColor);
+//        return contentView;
+//    }
+
+
 }

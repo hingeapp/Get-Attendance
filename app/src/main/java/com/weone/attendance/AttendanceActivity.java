@@ -18,7 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+/**
+ * Created by Sachin Shinde on 3/6/2015.
+ */
 
 public class AttendanceActivity extends ActionBarActivity {
 
@@ -38,7 +40,6 @@ public class AttendanceActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_attendance);
         ArrayList<SubjectHolder> holders = new ArrayList<SubjectHolder>();
         Intent intent = getIntent();
@@ -46,9 +47,6 @@ public class AttendanceActivity extends ActionBarActivity {
         name = intent.getStringExtra("name");
         attendance = intent.getStringExtra("attendance");
 
-//        Log.i("name is : ",name);
-//        Log.i("Att is : ",attendance);
-//        Log.i("Subjectnamesample : ",holders.get(0).getSubjectName()+" " + holders.get(0).getPercentAttendance());
 
         mDetailsList = (ListView)findViewById(R.id.subject_list);
         mName = (TextView) findViewById(R.id.name);
@@ -135,27 +133,27 @@ public class AttendanceActivity extends ActionBarActivity {
      * @param
      * @return
      */
-    protected void saveImage(Bitmap bmScreen2) {
-        // TODO Auto-generated method stub
-
-        //Log.i("Saving","File");
-        // String fname = "Upload.png";
-        File saved_image_file = new File(
-                Environment.getExternalStorageDirectory()
-                        + "/captured_Bitmap.png");
-        if (saved_image_file.exists())
-            saved_image_file.delete();
-        try {
-            FileOutputStream out = new FileOutputStream(saved_image_file);
-            bmScreen2.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+//    protected void saveImage(Bitmap bmScreen2) {
+//        // TODO Auto-generated method stub
+//
+//        //Log.i("Saving","File");
+//        // String fname = "Upload.png";
+//        File saved_image_file = new File(
+//                Environment.getExternalStorageDirectory()
+//                        + "/captured_Bitmap.png");
+//        if (saved_image_file.exists())
+//            saved_image_file.delete();
+//        try {
+//            FileOutputStream out = new FileOutputStream(saved_image_file);
+//            bmScreen2.compress(Bitmap.CompressFormat.PNG, 100, out);
+//            out.flush();
+//            out.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 
     @Override

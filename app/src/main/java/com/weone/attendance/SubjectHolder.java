@@ -6,6 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Aditya Shirole on 3/6/2015.
  */
+
 public class SubjectHolder implements Parcelable{
     public String subjectName;
     public String FullSubjectName;
@@ -90,6 +91,4 @@ public class SubjectHolder implements Parcelable{
             return new SubjectHolder[size];
         }
     };
-
-
 }
