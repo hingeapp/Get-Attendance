@@ -1,5 +1,5 @@
 # Get Attendance by [h!nge](http://www.hinge.college)
-## The Best App for PICTians to check attendance
+## The Android App for PICTians to check attendance
 
 * Check your Attendance without the hassle of using the slow PICT MIS Login
 * Find subject wise attendance at a glance
